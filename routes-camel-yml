@@ -67,7 +67,7 @@
             id: log-1681
             message: '"MASTERCARD OK"'
 - route:
-    id: route-3418
+    id: split-route
     from:
       id: from-7931
       uri: direct:splitStart
@@ -80,13 +80,13 @@
             steps:
               - log:
                   id: log-2821
-                  message: Item = ${body}
+                  message: '"Item = ${body}"'
               - to:
                   id: to-3939
                   uri: direct:process
                   parameters: {}
 - route:
-    id: route-2507
+    id: process-route
     from:
       id: from-2369
       uri: direct:process
@@ -94,4 +94,4 @@
       steps:
         - log:
             id: log-2259
-            message: Processing ${body}
+            message: '"Processing ${body}"'
