@@ -1,0 +1,97 @@
+- route:
+    id: payment-route
+    from:
+      id: payment-main-route
+      uri: direct:start
+      parameters: {}
+      steps:
+        - log:
+            id: log-6281
+            message: '"Flow reçu = ${header.flowCode}"'
+        - choice:
+            id: choice-1330
+            when:
+              - id: when-3950
+                steps:
+                  - log:
+                      id: log-1668
+                      message: '"Traitement Mastercard"'
+                  - to:
+                      id: to-3589
+                      uri: direct:mastercard
+                      parameters:
+                        name: mastercard
+                simple:
+                  expression: ${header.flowCode} == "MASTERCARD"
+              - id: when-1193
+                steps:
+                  - log:
+                      id: log-1945
+                      message: '"Traitement VISA"'
+                  - to:
+                      id: to-2183
+                      uri: direct:visa
+                      parameters:
+                        name: visa
+                simple:
+                  expression: ${header.flowCode} == "VISA"
+            otherwise:
+              id: otherwise-2028
+              steps:
+                - log:
+                    id: log-2343
+                    message: '"Flow inconnu"'
+                - setBody:
+                    id: setBody-3852
+                    simple:
+                      expression: '"Flow non supporté"'
+- route:
+    id: visa-route
+    from:
+      id: from-6403
+      uri: direct:visa
+      parameters:
+        name: visa
+      steps:
+        - log:
+            id: log-2315
+            message: '"VISA OK"'
+- route:
+    id: mastercard-route
+    from:
+      id: from-8044
+      uri: direct:mastercard
+      parameters: {}
+      steps:
+        - log:
+            id: log-1681
+            message: '"MASTERCARD OK"'
+- route:
+    id: route-3418
+    from:
+      id: from-7931
+      uri: direct:splitStart
+      parameters: {}
+      steps:
+        - split:
+            id: split-2806
+            simple:
+              expression: ${body}
+            steps:
+              - log:
+                  id: log-2821
+                  message: Item = ${body}
+              - to:
+                  id: to-3939
+                  uri: direct:process
+                  parameters: {}
+- route:
+    id: route-2507
+    from:
+      id: from-2369
+      uri: direct:process
+      parameters: {}
+      steps:
+        - log:
+            id: log-2259
+            message: Processing ${body}
