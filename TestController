@@ -12,3 +12,18 @@ public String validatePayment() {
 
     return "Validation sent";
 }
+
+@PostMapping("/xml-routing/{amount}")
+public String testXmlRouting(@PathVariable String amount) {
+
+    String xml = """
+        <payment>
+            <id>PAY-001</id>
+            <amount>%s</amount>
+        </payment>
+        """.formatted(amount);
+
+    producerTemplate.sendBody("direct:xmlRouting", xml);
+
+    return "XML routing sent";
+}
