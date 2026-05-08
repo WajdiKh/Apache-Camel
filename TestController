@@ -1,0 +1,14 @@
+@PostMapping("/validate")
+public String validatePayment() {
+
+    String xml = """
+        <payment>
+            <id>123</id>
+            <amount>100</amount>
+        </payment>
+        """;
+
+    producerTemplate.sendBody("direct:validatePayment", xml);
+
+    return "Validation sent";
+}
